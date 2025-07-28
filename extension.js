@@ -313,4 +313,4 @@ class SplitStringExtension {
   }
 }
 
-Scratch.extensions.register(new SplitStringExtension());
+Scratch.extensions.register(SplitStringExtension);
