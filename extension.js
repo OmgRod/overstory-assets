@@ -1,8 +1,4 @@
 class SplitStringExtension {
-  constructor(runtime) {
-    this.runtime = runtime;
-  }
-  
   getInfo() {
     return {
       id: "splitString",
@@ -140,10 +136,15 @@ class SplitStringExtension {
           category: "String Tools"
         },
         {
-          opcode: "isEnterPressed",
+          opcode: "keyPressed",
           blockType: Scratch.BlockType.BOOLEAN,
-          text: "enter key pressed?",
-          arguments: {},
+          text: "[KEY] key pressed?",
+          arguments: {
+            KEY: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "enter"
+            }
+          },
           category: "String Tools"
         }
       ],
@@ -307,9 +308,9 @@ class SplitStringExtension {
     return match ? match[1].length : 0;
   }
 
-  isEnterPressed(args, util) {
-    return util.ioQuery('keyboard', 'getKeyIsDown', ['enter']);
+  keyPressed(args, util) {
+    return util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY.toLowerCase()]);
   }
 }
 
-Scratch.extensions.register(SplitStringExtension);
+Scratch.extensions.register(new SplitStringExtension());
