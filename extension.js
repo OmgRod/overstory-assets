@@ -134,18 +134,6 @@ class SplitStringExtension {
             }
           },
           category: "String Tools"
-        },
-        {
-          opcode: "keyPressed",
-          blockType: Scratch.BlockType.BOOLEAN,
-          text: "[KEY] key pressed?",
-          arguments: {
-            KEY: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: "enter"
-            }
-          },
-          category: "String Tools"
         }
       ],
       menus: {
@@ -307,10 +295,6 @@ class SplitStringExtension {
     const match = text.match(/^(\s*)/);
     return match ? match[1].length : 0;
   }
-
-  keyPressed(args, util) {
-    return util.ioQuery('keyboard', 'getKeyIsDown', [args.KEY.toLowerCase()]);
-  }
 }
 
-Scratch.extensions.register(SplitStringExtension);
+Scratch.extensions.register(new SplitStringExtension());
