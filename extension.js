@@ -21,7 +21,8 @@ class SplitStringExtension {
               type: Scratch.ArgumentType.NUMBER,
               defaultValue: 2
             }
-          }
+          },
+          category: "String Tools"
         },
         {
           opcode: "sliceText",
@@ -41,18 +42,8 @@ class SplitStringExtension {
               type: Scratch.ArgumentType.STRING,
               defaultValue: "example"
             }
-          }
-        },
-        {
-          opcode: "parseUTString",
-          blockType: Scratch.BlockType.REPORTER,
-          text: "parse UT string [TEXT]",
-          arguments: {
-            TEXT: {
-              type: Scratch.ArgumentType.STRING,
-              defaultValue: "Long ago^1, two races&ruled over Earth^1\\:&HUMANS and MONSTERS^6. \\E1 ^1 %"
-            }
-          }
+          },
+          category: "String Tools"
         },
         {
           opcode: "countSplitParts",
@@ -67,7 +58,50 @@ class SplitStringExtension {
               type: Scratch.ArgumentType.STRING,
               defaultValue: "|"
             }
-          }
+          },
+          category: "String Tools"
+        },
+
+        // Undertale string parsing category blocks
+        {
+          opcode: "parseUTString",
+          blockType: Scratch.BlockType.REPORTER,
+          text: "parse undertale string [TEXT]",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "Long ago^1, two races&ruled over Earth^1\\:&HUMANS and MONSTERS^6. \\E1 ^1 %"
+            }
+          },
+          category: "Undertale String Tools"
+        },
+        {
+          opcode: "utParsedToText",
+          blockType: Scratch.BlockType.REPORTER,
+          text: "convert parsed undertale string [TEXT] to text",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "text:L|text:o|text:n|text:g|text: |pause:1|text:a|text:g|text:o|newline"
+            }
+          },
+          category: "Undertale String Tools"
+        },
+        {
+          opcode: "utSplitParsed",
+          blockType: Scratch.BlockType.REPORTER,
+          text: "split parsed undertale string [TEXT] by [SEP]",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "text:Long|pause:1|newline|expression:0"
+            },
+            SEP: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "|"
+            }
+          },
+          category: "Undertale String Tools"
         }
       ],
       menus: {
@@ -83,7 +117,6 @@ class SplitStringExtension {
     const text = args.TEXT ?? "";
     const sep = args.SEP ?? "|";
     const index = Number(args.INDEX) - 1;
-
     const parts = text.split(sep);
     return parts[index] ?? "";
   }
@@ -96,6 +129,12 @@ class SplitStringExtension {
     if (side === "first") return text.slice(0, count);
     if (side === "last") return text.slice(-count);
     return "";
+  }
+
+  countSplitParts(args) {
+    const text = args.TEXT ?? "";
+    const sep = args.SEP ?? "|";
+    return text.split(sep).length;
   }
 
   parseUTString(args) {
@@ -165,10 +204,39 @@ class SplitStringExtension {
     return result.join("|");
   }
 
-  countSplitParts(args) {
-    const text = args.TEXT ?? "";
+  utParsedToText(args) {
+    const parsed = args.TEXT ?? "";
+    if (!parsed) return "";
+    const parts = parsed.split("|");
+    let output = "";
+    for (const part of parts) {
+      if (part.startsWith("text:")) {
+        let textPart = part.slice(5);
+        // Replace the obscure char with colon
+        textPart = textPart.replace(/\uFFF9/g, ":");
+        output += textPart;
+      } else if (part.startsWith("pause:")) {
+        output += `[pause ${part.slice(6)}]`;
+      } else if (part === "newline") {
+        output += "\n";
+      } else if (part === "end") {
+        output += "[end]";
+      } else if (part === "flush") {
+        output += "[flush]";
+      } else if (part.startsWith("expression:")) {
+        output += `[expr ${part.slice(11)}]`;
+      } else {
+        output += `[${part}]`;
+      }
+    }
+    return output;
+  }
+
+  utSplitParsed(args) {
+    const parsed = args.TEXT ?? "";
     const sep = args.SEP ?? "|";
-    return text.split(sep).length;
+    const parts = parsed.split(sep);
+    return parts.join("\n");
   }
 }
 
