@@ -122,6 +122,18 @@ class SplitStringExtension {
             }
           },
           category: "Undertale String Tools"
+        },
+        {
+          opcode: "countLeadingWhitespace",
+          blockType: Scratch.BlockType.REPORTER,
+          text: "count leading whitespace in [TEXT]",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "    indented text"
+            }
+          },
+          category: "String Tools"
         }
       ],
       menus: {
@@ -276,6 +288,12 @@ class SplitStringExtension {
     const sep = args.SEP ?? "|";
     const parts = parsed.split(sep);
     return parts.join("\n");
+  }
+
+  countLeadingWhitespace(args) {
+    const text = args.TEXT ?? "";
+    const match = text.match(/^(\s*)/);
+    return match ? match[1].length : 0;
   }
 }
 
