@@ -70,7 +70,7 @@ class SplitStringExtension {
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: "Long ago^1, two races&ruled over Earth^1\\:&HUMANS and MONSTERS^6. \\E1 ^1 %"
+              defaultValue: "Long ago^1, two races&ruled over Earth^1\\&#HUMANS and MONSTERS^6. \\E1 ^1 %"
             }
           },
           category: "Undertale String Tools"
@@ -82,7 +82,7 @@ class SplitStringExtension {
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: "text:L|text:o|text:n|text:g|text: |pause:1|text:a|text:g|text:o|newline"
+              defaultValue: "text#L|text#o|text#n|text#g|text# |pause#1|text#a|text#g|text#o|newline"
             }
           },
           category: "Undertale String Tools"
@@ -94,7 +94,7 @@ class SplitStringExtension {
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: "text:Long|pause:1|newline|expression:0"
+              defaultValue: "text#Long|pause#1|newline|expression#0"
             },
             SEP: {
               type: Scratch.ArgumentType.STRING,
@@ -114,7 +114,7 @@ class SplitStringExtension {
           arguments: {
             TEXT: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: "text:Long|pause:1|newline|expression:0"
+              defaultValue: "text#Long|pause#1|newline|expression#0"
             },
             SEP: {
               type: Scratch.ArgumentType.STRING,
@@ -176,13 +176,13 @@ class SplitStringExtension {
           while (i < raw.length && /[0-9]/.test(raw[i])) {
             num += raw[i++];
           }
-          result.push(`expression:${parseInt(num || "0")}`);
+          result.push(`expression#${parseInt(num || "0")}`);
           continue;
         } else {
           if (nextCh === ":") {
-            result.push(`text:\uFFF9`);
+            result.push(`text#\uFFF9`);
           } else {
-            result.push(`text:${nextCh}`);
+            result.push(`text#${nextCh}`);
           }
           i++;
           continue;
@@ -195,7 +195,7 @@ class SplitStringExtension {
         while (i < raw.length && /[0-9]/.test(raw[i])) {
           num += raw[i++];
         }
-        result.push(`pause:${parseInt(num || "1")}`);
+        result.push(`pause#${parseInt(num || "1")}`);
         continue;
       }
 
@@ -217,7 +217,7 @@ class SplitStringExtension {
         continue;
       }
 
-      result.push(`text:${ch}`);
+      result.push(`text#${ch}`);
       i++;
     }
 
@@ -230,12 +230,11 @@ class SplitStringExtension {
     const parts = parsed.split("|");
     let output = "";
     for (const part of parts) {
-      if (part.startsWith("text:")) {
+      if (part.startsWith("text#")) {
         let textPart = part.slice(5);
-        // Replace the obscure char with colon
         textPart = textPart.replace(/\uFFF9/g, ":");
         output += textPart;
-      } else if (part.startsWith("pause:")) {
+      } else if (part.startsWith("pause#")) {
         output += `[pause ${part.slice(6)}]`;
       } else if (part === "newline") {
         output += "\n";
@@ -243,7 +242,7 @@ class SplitStringExtension {
         output += "[end]";
       } else if (part === "flush") {
         output += "[flush]";
-      } else if (part.startsWith("expression:")) {
+      } else if (part.startsWith("expression#")) {
         output += `[expr ${part.slice(11)}]`;
       } else {
         output += `[${part}]`;
@@ -256,9 +255,9 @@ class SplitStringExtension {
     const parsed = args.TEXT ?? "";
     const sep = args.SEP ?? "|";
     const limit = Math.max(0, Number(args.LIMIT) || 0);
-  
+
     if (limit === 0) return parsed;
-  
+
     const parts = [];
     let remaining = parsed;
     for (let i = 0; i < limit - 1; i++) {
@@ -268,7 +267,7 @@ class SplitStringExtension {
       remaining = remaining.slice(index + sep.length);
     }
     parts.push(remaining);
-  
+
     return parts.join("\n");
   }
 
