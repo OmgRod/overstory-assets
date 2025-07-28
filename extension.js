@@ -88,6 +88,26 @@ class SplitStringExtension {
           category: "Undertale String Tools"
         },
         {
+          opcode: "utSplitParsedLimited",
+          blockType: Scratch.BlockType.REPORTER,
+          text: "split parsed undertale string [TEXT] by [SEP] max [LIMIT] splits",
+          arguments: {
+            TEXT: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "text:Long|pause:1|newline|expression:0"
+            },
+            SEP: {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "|"
+            },
+            LIMIT: {
+              type: Scratch.ArgumentType.NUMBER,
+              defaultValue: 2
+            }
+          },
+          category: "Undertale String Tools"
+        },
+        {
           opcode: "utSplitParsed",
           blockType: Scratch.BlockType.REPORTER,
           text: "split parsed undertale string [TEXT] by [SEP]",
@@ -230,6 +250,26 @@ class SplitStringExtension {
       }
     }
     return output;
+  }
+
+  utSplitParsedLimited(args) {
+    const parsed = args.TEXT ?? "";
+    const sep = args.SEP ?? "|";
+    const limit = Math.max(0, Number(args.LIMIT) || 0);
+  
+    if (limit === 0) return parsed;
+  
+    const parts = [];
+    let remaining = parsed;
+    for (let i = 0; i < limit - 1; i++) {
+      const index = remaining.indexOf(sep);
+      if (index === -1) break;
+      parts.push(remaining.slice(0, index));
+      remaining = remaining.slice(index + sep.length);
+    }
+    parts.push(remaining);
+  
+    return parts.join("\n");
   }
 
   utSplitParsed(args) {
